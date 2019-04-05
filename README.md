@@ -1,5 +1,5 @@
 # Final Project
-### The Orange State Turns Purple on Election Day
+### The Sunshine State Turns Purple on Election Day
 
 This project explore's Florida's demographic changes over the last couple of decades and how these changes have influenced party affiliation in the Sunshine State over time.
 
