@@ -18,6 +18,8 @@ data1 <- read_excel("Voter_Registration_By_County_and_Party_Feb_2019.xlsx")
 data2 <- read_excel("Voter_Registration_By_Party_Affiliation_Feb_2019.xlsx")
 # Data2 is a spreadsheet containing voter registration of FL voters by party as of Feb. 2019 from 1972 to 2019.
 
+# I downloaded a series of csv files from the US Census Bureau, but the files downloaded as .zip files, however, it seems like the data is distorted. Can you guys help me figure out how to fix these files in order to load them in? Thank you in advance.
+
 ```
 
 
