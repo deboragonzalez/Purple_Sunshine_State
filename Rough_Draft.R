@@ -6,12 +6,14 @@ library(janitor)
 library(leaflet)
 library(ggthemes)
 
-data1 <- read_excel("Voter_Registration_By_County_and_Party_Feb_2019.xlsx", ) %>% 
+data1 <- read_excel("Voter_Registration_By_County_and_Party_Feb_2019.xlsx") %>% 
   clean_names() %>% 
-  mutate(republican_party_of_florida = parse_number(republican_party_of_florida)) %>% 
-  mutate(florida_democratic_party = parse_number(florida_democratic_party)) %>% 
-  mutate(other_or_no_party_affiliation = parse_number(other_or_no_party_affiliation)) %>% 
-  mutate(total = parse_number(totals))
+  head(-2) %>% 
+  mutate(republican_party_of_florida = as.numeric(republican_party_of_florida)) %>% 
+  mutate(florida_democratic_party = as.numeric(florida_democratic_party)) %>% 
+  mutate(no_party_affiliation = as.numeric(no_party_affiliation)) %>% 
+  mutate(total = as.numeric(totals)) %>% 
+  write_rds()
 
 # Data1 is a spreadsheet containing voter registration of FL voters by county
 # and party as of Feb. 2019.
@@ -77,7 +79,8 @@ data2_percent <- data2 %>%
   mutate(percent_other = (other_or_no_party_affiliation/total)*100) 
 
 data2_percent %>% 
-  ggplot() + geom_line(aes(x =year, y = percent_rep, color = "red")) + geom_line(aes(x = year, y = percent_dem, color = "blue")) + 
+  ggplot() + geom_line(aes(x =year, y = percent_rep), color = "red3") + 
+  geom_line(aes(x = year, y = percent_dem), color = "blue4") 
   
 
 
