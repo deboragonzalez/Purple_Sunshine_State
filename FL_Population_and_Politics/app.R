@@ -14,6 +14,9 @@ library(janitor)
 library(leaflet)
 library(ggthemes)
 library(shiny)
+library(sf)
+library(fivethirtyeight)
+library(plotly)
 
 
 party_affiliation_years <- read_rds("party_affiliation_years")
