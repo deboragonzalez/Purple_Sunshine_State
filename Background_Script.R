@@ -10,7 +10,7 @@ library(fivethirtyeight)
 library(plotly)
 
 
-data1 <- read_excel("Voter_Registration_By_County_and_Party_Feb_2019.xlsx") %>% 
+data1 <- read_excel("Data/Voter_Registration_By_County_and_Party_Feb_2019.xlsx") %>% 
   clean_names() %>% 
   head(-2) %>% 
   mutate(republican_party_of_florida = as.numeric(republican_party_of_florida)) %>% 
@@ -23,7 +23,7 @@ data1 <- read_excel("Voter_Registration_By_County_and_Party_Feb_2019.xlsx") %>%
 # and party as of Feb. 2019. 
 
 
-data2 <- read_excel("Voter_Registration_By_Party_Affiliation_Feb_2019.xlsx") %>% 
+data2 <- read_excel("Data/Voter_Registration_By_Party_Affiliation_Feb_2019.xlsx") %>% 
   clean_names() %>% 
   mutate(republican_party_of_florida = parse_number(republican_party_of_florida)) %>% 
   mutate(florida_democratic_party = parse_number(florida_democratic_party)) %>% 
