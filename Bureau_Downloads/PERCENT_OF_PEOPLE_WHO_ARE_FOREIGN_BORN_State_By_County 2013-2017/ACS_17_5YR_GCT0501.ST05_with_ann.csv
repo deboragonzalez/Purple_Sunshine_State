@@ -1,0 +1,70 @@
+GEO.id,GEO.id2,GEO.display-label,GCT_STUB.target-geo-id,GCT_STUB.target-geo-id2,GCT_STUB.display-label,GCT_STUB.display-label,HC01,HC02
+Id,Id2,Geography,Target Geo Id,Target Geo Id2,Geographic Area,Geographic Area,Percent,Margin of Error
+0400000US12,12,Florida,0400000US12,12,Florida,Florida,20.2,0.1
+0400000US12,12,Florida,0500000US12001,12001,Florida - Alachua County,Alachua County,10.0,0.5
+0400000US12,12,Florida,0500000US12003,12003,Florida - Baker County,Baker County,1.4,0.5
+0400000US12,12,Florida,0500000US12005,12005,Florida - Bay County,Bay County,5.7,0.6
+0400000US12,12,Florida,0500000US12007,12007,Florida - Bradford County,Bradford County,3.0,0.8
+0400000US12,12,Florida,0500000US12009,12009,Florida - Brevard County,Brevard County,8.6,0.4
+0400000US12,12,Florida,0500000US12011,12011,Florida - Broward County,Broward County,33.1,0.4
+0400000US12,12,Florida,0500000US12013,12013,Florida - Calhoun County,Calhoun County,4.0,1.0
+0400000US12,12,Florida,0500000US12015,12015,Florida - Charlotte County,Charlotte County,10.2,0.7
+0400000US12,12,Florida,0500000US12017,12017,Florida - Citrus County,Citrus County,5.3,0.4
+0400000US12,12,Florida,0500000US12019,12019,Florida - Clay County,Clay County,6.9,0.6
+0400000US12,12,Florida,0500000US12021,12021,Florida - Collier County,Collier County,24.3,0.7
+0400000US12,12,Florida,0500000US12023,12023,Florida - Columbia County,Columbia County,3.6,0.6
+0400000US12,12,Florida,0500000US12027,12027,Florida - DeSoto County,DeSoto County,17.5,1.2
+0400000US12,12,Florida,0500000US12029,12029,Florida - Dixie County,Dixie County,2.7,1.0
+0400000US12,12,Florida,0500000US12031,12031,Florida - Duval County,Duval County,10.3,0.4
+0400000US12,12,Florida,0500000US12033,12033,Florida - Escambia County,Escambia County,4.8,0.3
+0400000US12,12,Florida,0500000US12035,12035,Florida - Flagler County,Flagler County,11.1,0.9
+0400000US12,12,Florida,0500000US12037,12037,Florida - Franklin County,Franklin County,3.2,0.7
+0400000US12,12,Florida,0500000US12039,12039,Florida - Gadsden County,Gadsden County,5.3,0.8
+0400000US12,12,Florida,0500000US12041,12041,Florida - Gilchrist County,Gilchrist County,2.9,0.7
+0400000US12,12,Florida,0500000US12043,12043,Florida - Glades County,Glades County,11.4,2.2
+0400000US12,12,Florida,0500000US12045,12045,Florida - Gulf County,Gulf County,2.5,0.6
+0400000US12,12,Florida,0500000US12047,12047,Florida - Hamilton County,Hamilton County,3.3,0.6
+0400000US12,12,Florida,0500000US12049,12049,Florida - Hardee County,Hardee County,13.1,2.0
+0400000US12,12,Florida,0500000US12051,12051,Florida - Hendry County,Hendry County,27.6,1.8
+0400000US12,12,Florida,0500000US12053,12053,Florida - Hernando County,Hernando County,6.9,0.6
+0400000US12,12,Florida,0500000US12055,12055,Florida - Highlands County,Highlands County,11.1,0.9
+0400000US12,12,Florida,0500000US12057,12057,Florida - Hillsborough County,Hillsborough County,16.5,0.3
+0400000US12,12,Florida,0500000US12059,12059,Florida - Holmes County,Holmes County,1.9,0.8
+0400000US12,12,Florida,0500000US12061,12061,Florida - Indian River County,Indian River County,10.3,0.8
+0400000US12,12,Florida,0500000US12063,12063,Florida - Jackson County,Jackson County,3.2,0.5
+0400000US12,12,Florida,0500000US12065,12065,Florida - Jefferson County,Jefferson County,3.1,0.8
+0400000US12,12,Florida,0500000US12067,12067,Florida - Lafayette County,Lafayette County,4.7,3.0
+0400000US12,12,Florida,0500000US12069,12069,Florida - Lake County,Lake County,8.3,0.5
+0400000US12,12,Florida,0500000US12071,12071,Florida - Lee County,Lee County,16.1,0.4
+0400000US12,12,Florida,0500000US12073,12073,Florida - Leon County,Leon County,6.7,0.4
+0400000US12,12,Florida,0500000US12075,12075,Florida - Levy County,Levy County,3.7,0.6
+0400000US12,12,Florida,0500000US12077,12077,Florida - Liberty County,Liberty County,4.2,1.7
+0400000US12,12,Florida,0500000US12079,12079,Florida - Madison County,Madison County,4.0,1.2
+0400000US12,12,Florida,0500000US12081,12081,Florida - Manatee County,Manatee County,12.6,0.5
+0400000US12,12,Florida,0500000US12083,12083,Florida - Marion County,Marion County,7.2,0.5
+0400000US12,12,Florida,0500000US12085,12085,Florida - Martin County,Martin County,10.2,0.6
+0400000US12,12,Florida,0500000US12086,12086,Florida - Miami-Dade County,Miami-Dade County,52.9,0.3
+0400000US12,12,Florida,0500000US12087,12087,Florida - Monroe County,Monroe County,18.5,1.1
+0400000US12,12,Florida,0500000US12089,12089,Florida - Nassau County,Nassau County,3.5,0.5
+0400000US12,12,Florida,0500000US12091,12091,Florida - Okaloosa County,Okaloosa County,6.8,0.4
+0400000US12,12,Florida,0500000US12093,12093,Florida - Okeechobee County,Okeechobee County,12.5,1.2
+0400000US12,12,Florida,0500000US12095,12095,Florida - Orange County,Orange County,20.7,0.5
+0400000US12,12,Florida,0500000US12097,12097,Florida - Osceola County,Osceola County,19.9,1.0
+0400000US12,12,Florida,0500000US12099,12099,Florida - Palm Beach County,Palm Beach County,24.6,0.3
+0400000US12,12,Florida,0500000US12101,12101,Florida - Pasco County,Pasco County,9.3,0.4
+0400000US12,12,Florida,0500000US12103,12103,Florida - Pinellas County,Pinellas County,11.8,0.3
+0400000US12,12,Florida,0500000US12105,12105,Florida - Polk County,Polk County,10.0,0.4
+0400000US12,12,Florida,0500000US12107,12107,Florida - Putnam County,Putnam County,3.9,0.5
+0400000US12,12,Florida,0500000US12109,12109,Florida - St. Johns County,St. Johns County,6.9,0.5
+0400000US12,12,Florida,0500000US12111,12111,Florida - St. Lucie County,St. Lucie County,16.3,0.8
+0400000US12,12,Florida,0500000US12113,12113,Florida - Santa Rosa County,Santa Rosa County,4.7,0.5
+0400000US12,12,Florida,0500000US12115,12115,Florida - Sarasota County,Sarasota County,12.4,0.5
+0400000US12,12,Florida,0500000US12117,12117,Florida - Seminole County,Seminole County,12.4,0.5
+0400000US12,12,Florida,0500000US12119,12119,Florida - Sumter County,Sumter County,5.6,0.6
+0400000US12,12,Florida,0500000US12121,12121,Florida - Suwannee County,Suwannee County,5.3,0.9
+0400000US12,12,Florida,0500000US12123,12123,Florida - Taylor County,Taylor County,2.6,0.9
+0400000US12,12,Florida,0500000US12125,12125,Florida - Union County,Union County,2.8,0.9
+0400000US12,12,Florida,0500000US12127,12127,Florida - Volusia County,Volusia County,7.5,0.3
+0400000US12,12,Florida,0500000US12129,12129,Florida - Wakulla County,Wakulla County,1.8,0.5
+0400000US12,12,Florida,0500000US12131,12131,Florida - Walton County,Walton County,5.9,0.8
+0400000US12,12,Florida,0500000US12133,12133,Florida - Washington County,Washington County,2.8,0.7

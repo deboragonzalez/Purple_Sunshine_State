@@ -37,12 +37,7 @@ ui <- fluidPage(
                     min = min(unique(party_affiliation_years$year)), 
                     max = max(unique(party_affiliation_years$year)),
                     value = c(1972, 2019),
-                    sep = ""),
-      
-      selectInput("party",
-                  label = "Select Party:",
-                  choices = c("florida_republican_party", "democratic_republic_of_florida", "other_or_no_party_affiliation"),
-                  selected = "florida_republican_party")
+                    sep = "")
       ),
    
       
@@ -61,6 +56,15 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  output$text <- renderText({
+    "<h4><b>See the next tab for some cool plots</h4></b> <br/><br/> Using data from: <br/>
+
+    <br/>*The United States Census Bureau 2000 and 2010 reports
+    <br/>*The American Community Survey 5-Year (2013-2017) reports
+    <br/>*Florida Department of State - Division of Elections Voter Registration
+        <br/>-Registration reports by County (2019)
+        <br/>-Registration reports by County and by Party (1972-2019)"})
    
   output$percents <- renderPlot({
     party_percents <- party_affiliation_years %>% 

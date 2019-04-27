@@ -1,0 +1,12 @@
+name: FL_Population_and_Politics
+title: FL_Population_and_Politics
+username:
+account: debi-g
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 886333
+bundleId: 2034555
+url: https://debi-gonzalez.shinyapps.io/FL_Population_and_Politics/
+when: 1556076370.76603
+asMultiple: FALSE
+asStatic: FALSE
