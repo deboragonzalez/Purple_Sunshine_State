@@ -24,7 +24,7 @@ party_affiliation_years <- read_rds("party_affiliation_years")
 # Spreadsheet containing voter registration of FL voters by party as
 # of Feb. 2019 from 1972 to 2019.
 
-
+data_by_county <- read_rds("data_by_county")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -52,8 +52,7 @@ ui <- fluidPage(
            tabPanel(h3("Political Allegiance over Time"),
                     plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
            tabPanel(h3("Florida's Political Allegiance by County"),
-                    plotOutput("map_fl"))
-      )
+                    plotlyOutput("map_fl")), br(), htmlOutput("text_2"), br(), plotOutput("county_table"))
    )))
 
 
@@ -61,7 +60,8 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output$text <- renderText({
-    "<h4><b>See the next tab for some cool plots</h4></b> <br/><br/> Using data from: <br/>
+    "<h4><b>See the next tab for some cool plots</h4></b> <br/><br/> 
+    Using data from: <br/>
 
     <br/>*The United States Census Bureau 2000 and 2010 reports
     <br/>*The American Community Survey 5-Year (2013-2017) reports
@@ -110,6 +110,21 @@ server <- function(input, output) {
          theme_economist()
          
      })
+     
+     output$map_fl <- renderPlotly({ 
+       ggplotly(ggplot(data = data1_3_4_map, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
+                  geom_sf(aes(fill = party_control)) +
+                  theme_map() + theme_economist() + scale_fill_fivethirtyeight() +
+                  labs(title = "County Partisanship by Majority of Registered Voters", fill = NULL) +
+                  theme(
+                    panel.grid.major = element_line(colour = 'transparent'), 
+                    line = element_blank(),
+                    axis.text = element_blank(),
+                    axis.ticks = element_blank(),
+                    plot.background = element_rect(fill = "transparent")), tooltip = c("text"))
+        })
+     
+     output$text_2 <- renderText({"Florida's median annual income is $61,442 This is the distribution by County."})
 }
 
 # Run the application 

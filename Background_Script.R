@@ -114,7 +114,8 @@ data3_4 <- left_join(data3, data4, by = c("geographic_area_1" = "geographic_area
   # Percent is the percent of people born outside of the U.S. and dollar is the
   # median income per family.
 
-data1_3_4_map <- left_join(data1_map, data3_4, by = c("NAMELSAD" = "geographic_area_1"))
+data1_3_4_map <- left_join(data1_map, data3_4, by = c("NAMELSAD" = "geographic_area_1")) %>% 
+  write_rds("data_by_county")
 
   
 
@@ -128,6 +129,18 @@ ggplotly(ggplot(data = data1_3_4_map, aes(text = paste(NAMELSAD, "<br>", "Major 
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     plot.background = element_rect(fill = "transparent")), tooltip = c("text"))
+
+
+# This chart in numbers:
+
+data1_3_4_map %>% 
+  select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>% 
+  gt()
+
+without_geometry <- as_tibble(original_dataframe) %>% 
+  mutate(geometry = NULL)
+
+# look into shiny themes, and 
 
 # fill ="Majority Party Affiliation"
   
