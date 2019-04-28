@@ -36,7 +36,7 @@ data2 <- read_excel("Data/Voter_Registration_By_Party_Affiliation_Feb_2019.xlsx"
 # of Feb. 2019 from 1972 to 2019.
 
 
-foreign_pop_county <- read_csv("Bureau_Downloads/PERCENT_OF_PEOPLE_WHO_ARE_FOREIGN_BORN_State_By_County 2013-2017/ACS_17_5YR_GCT0501.ST05_with_ann.csv", skip = 1) 
+foreign_pop_county <- read_csv("Data/PERCENT_OF_PEOPLE_WHO_ARE_FOREIGN_BORN_State_By_County 2013-2017/ACS_17_5YR_GCT0501.ST05_with_ann.csv", skip = 1)
 data3 <- foreign_pop_county[, ! str_detect(names(foreign_pop_county), pattern = "Margin of Error")] %>% 
   clean_names() %>% 
   tail(-1) %>% 
@@ -45,7 +45,7 @@ data3 <- foreign_pop_county[, ! str_detect(names(foreign_pop_county), pattern = 
 # Data3 shows the percent of foreign born individuals by county.
 
 
-income_county <- read_csv("Bureau_Downloads/MEDIAN_FAMILY_INCOME/ACS_17_5YR_GCT1902.ST05_with_ann.csv", skip = 1)
+income_county <- read_csv("Data/MEDIAN_FAMILY_INCOME/ACS_17_5YR_GCT1902.ST05_with_ann.csv", skip = 1)
 data4 <- income_county[, ! str_detect(names(income_county), pattern = "Margin of Error")] %>% 
   clean_names() %>% 
   tail(-1) %>% 
@@ -118,7 +118,7 @@ data1_3_4_map <- left_join(data1_map, data3_4, by = c("NAMELSAD" = "geographic_a
 
   
 
-ggplotly(ggplot(data = data1_3_4_map) +
+ggplotly(ggplot(data = data1_3_4_map, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
   geom_sf(aes(fill = party_control)) +
   theme_map() + theme_economist() + scale_fill_fivethirtyeight() +
   labs(title = "County Partisanship by Majority of Registered Voters", fill = NULL) +
@@ -127,7 +127,7 @@ ggplotly(ggplot(data = data1_3_4_map) +
     line = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
-    plot.background = element_rect(fill = "transparent")))
+    plot.background = element_rect(fill = "transparent")), tooltip = c("text"))
 
 # fill ="Majority Party Affiliation"
   
