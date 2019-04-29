@@ -17,3 +17,6 @@ Using data from:
 
 
 A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.
+
+
+<a href='https://debi-gonzalez.shinyapps.io/FL_Population_and_Politics/'>Check out the published app here!</a><br/>

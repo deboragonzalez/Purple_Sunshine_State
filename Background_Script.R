@@ -1,9 +1,11 @@
+# Florida's Population & Politics Project
+# By: Debora Gonzalez
+
 library(tidyverse)
 library(readxl)
 library(gt)
 library(tigris)
 library(janitor)
-library(leaflet)
 library(ggthemes)
 library(sf)
 library(fivethirtyeight)

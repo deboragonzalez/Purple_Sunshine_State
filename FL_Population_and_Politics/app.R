@@ -11,9 +11,9 @@ library(readxl)
 library(gt)
 library(tigris)
 library(janitor)
-library(leaflet)
 library(ggthemes)
 library(shiny)
+library(shinythemes)
 library(sf)
 library(fivethirtyeight)
 library(plotly)
@@ -91,7 +91,9 @@ Click on the different tabs to learn more about Florida's demographics and polit
     </ul>
     <br/>
     <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
-    <p></p>"})
+    <p></p>
+    <br/>
+    <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a><br/>"})
    
   output$percents <- renderPlot({
     party_percents <- party_affiliation_years %>% 
