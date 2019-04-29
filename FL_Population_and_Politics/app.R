@@ -38,7 +38,7 @@ ui <- fluidPage(
    sidebarLayout(
       sidebarPanel(
         sliderInput("year", 
-                    label = h3("Select Years"), 
+                    label = h4("Select Years:"), 
                     min = min(unique(party_affiliation_years$year)), 
                     max = max(unique(party_affiliation_years$year)),
                     value = c(1972, 2019),
@@ -49,11 +49,11 @@ ui <- fluidPage(
       # Show a plot of the generated distribution
       mainPanel(
          tabsetPanel(
-           tabPanel(h3("About this Project"),
+           tabPanel(h4("About this Project"),
                     htmlOutput("text")),
-           tabPanel(h3("Political Allegiance over Time"),
+           tabPanel(h4("Political Allegiance over Time"),
                     plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
-           tabPanel(h3("Florida by County: Political Allegiance & Demographics"),
+           tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
                     plotlyOutput("map_fl")), br(), plotOutput("county_table"))
    )))
 
@@ -62,14 +62,34 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output$text <- renderText({
-    "<h4><b>See the next tab for some cool plots</h4></b> <br/><br/> 
-    Using data from: <br/>
+    "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
+     <h4> Final Project for Data Visualization at Harvard University </h4>
 
-    <br/>*The United States Census Bureau 2000 and 2010 reports
-    <br/>*The American Community Survey 5-Year (2013-2017) reports
-    <br/>*Florida Department of State - Division of Elections Voter Registration
-        <br/>-Registration reports by County (2019)
-        <br/>-Registration reports by County and by Party (1972-2019)"})
+    <p>This project explores Florida's political allegiance changes from 1972 to the present 
+and highlights selected demographic trends that may relate to party affiliation in the Sunshine State. 
+Click on the different tabs to learn more about Florida's demographics and politics.</p></b> <br/><br/>
+
+    Using data from: <br/>
+    <ul>
+    <br/><li>U.S. Census Bureau, 2013-2017 American Community Survey 5-Year Estimates 
+    
+              <ul>
+              <br/> <li>Median Family Income (In 2017 Inflation-Adjusted Dollars): State -- County </li>
+              <br/> <li>Percent Of People Who Are Foreign Born: State -- County </li>
+              </ul>
+     </li>
+     <br/><br/><li>Florida Department of State - Division of Elections Voter Registration
+     
+              <ul>
+              <br/><li>Registration reports by County (2019) </li>
+              <br/><li>Registration reports by County and by Party (1972-2019) </li>
+              </ul>
+    </li>
+    <br/><br/><li>Tigris R Package: Shapes files - by County, State #12 </li>
+    </ul>
+    <br/>
+    <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
+    <p></p>"})
    
   output$percents <- renderPlot({
     party_percents <- party_affiliation_years %>% 
