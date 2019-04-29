@@ -26,6 +26,8 @@ party_affiliation_years <- read_rds("party_affiliation_years")
 
 data_by_county <- read_rds("data_by_county")
 
+no_geometry_county <- read_rds("no_geometry_county")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
@@ -51,8 +53,8 @@ ui <- fluidPage(
                     htmlOutput("text")),
            tabPanel(h3("Political Allegiance over Time"),
                     plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
-           tabPanel(h3("Florida's Political Allegiance by County"),
-                    plotlyOutput("map_fl")), br(), htmlOutput("text_2"), br(), plotOutput("county_table"))
+           tabPanel(h3("Florida by County: Political Allegiance & Demographics"),
+                    plotlyOutput("map_fl")), br(), plotOutput("county_table"))
    )))
 
 
@@ -84,8 +86,7 @@ server <- function(input, output) {
            x = "Year Range",
            title = "Changes in Political Allegiance Over Time") + 
       theme_economist()
-      
-  })
+    })
   
    output$reps <- renderPlot({
      gop_subset <- party_affiliation_years %>% filter(year >= input$year[1] & year <= input$year[2])
@@ -112,7 +113,7 @@ server <- function(input, output) {
      })
      
      output$map_fl <- renderPlotly({ 
-       ggplotly(ggplot(data = data1_3_4_map, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
+       ggplotly(ggplot(data = data_by_county, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
                   geom_sf(aes(fill = party_control)) +
                   theme_map() + theme_economist() + scale_fill_fivethirtyeight() +
                   labs(title = "County Partisanship by Majority of Registered Voters", fill = NULL) +
@@ -124,7 +125,30 @@ server <- function(input, output) {
                     plot.background = element_rect(fill = "transparent")), tooltip = c("text"))
         })
      
-     output$text_2 <- renderText({"Florida's median annual income is $61,442 This is the distribution by County."})
+     
+     output$county_table <- renderPlot({
+       
+       no_geometry_county %>% 
+       select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>%
+         mutate(percent = percent/100) %>% 
+         gt() %>% 
+         tab_header(title = "The Purple State in Numbers",
+                    subtitle = "Politics & Selected Demographics in Florida by County") %>% 
+         tab_spanner("Registered Voters", columns = vars(florida_democratic_party, republican_party_of_florida)) %>% 
+         cols_label(NAMELSAD = "County",
+                    florida_democratic_party = "Democrat",
+                    republican_party_of_florida = "Republican",
+                    party_control = "Dominant Party",
+                    percent = "Percent of Foreign Born",
+                    dollar = "Median Family Income") %>% 
+         tab_footnote(footnote = "Florida's median annual income is $61,442 This is the distribution by County.",
+                      locations = cells_column_labels(
+                        columns = vars(dollar))) %>% 
+         fmt_currency(columns = vars(dollar)) %>% 
+         fmt_percent(columns = vars(percent), decimals = 1) %>% 
+         fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0)
+       
+       })
 }
 
 # Run the application 

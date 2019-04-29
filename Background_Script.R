@@ -133,12 +133,31 @@ ggplotly(ggplot(data = data1_3_4_map, aes(text = paste(NAMELSAD, "<br>", "Major 
 
 # This chart in numbers:
 
-data1_3_4_map %>% 
-  select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>% 
-  gt()
+  
 
-without_geometry <- as_tibble(original_dataframe) %>% 
-  mutate(geometry = NULL)
+without_geometry <- as_tibble(data1_3_4_map) %>% 
+  mutate(geometry = NULL) %>% 
+  write_rds("no_geometry_county")
+
+without_geometry %>% 
+  select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>%
+  mutate(percent = percent/100) %>% 
+  gt() %>% 
+  tab_header(title = "The Purple State in Numbers",
+             subtitle = "Politics & Selected Demographics in Florida by County") %>% 
+  tab_spanner("Registered Voters", columns = vars(florida_democratic_party, republican_party_of_florida)) %>% 
+  cols_label(NAMELSAD = "County",
+             florida_democratic_party = "Democrat",
+             republican_party_of_florida = "Republican",
+             party_control = "Dominant Party",
+             percent = "Percent of Foreign Born",
+             dollar = "Median Family Income") %>% 
+  tab_footnote(footnote = "Florida's median annual income is $61,442 This is the distribution by County.",
+               locations = cells_column_labels(
+                 columns = vars(dollar))) %>% 
+  fmt_currency(columns = vars(dollar)) %>% 
+  fmt_percent(columns = vars(percent), decimals = 1) %>% 
+  fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0)
 
 # look into shiny themes, and 
 
