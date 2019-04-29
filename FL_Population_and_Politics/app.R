@@ -54,8 +54,10 @@ ui <- fluidPage(
            tabPanel(h4("Political Allegiance over Time"),
                     plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
            tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
-                    plotlyOutput("map_fl")), br(), plotOutput("county_table"))
-   )))
+                    plotlyOutput("map_fl")),
+           tabPanel(h4("Florida in Numbers"),
+                    gt_output("county_table")))
+           )))
 
 
 # Define server logic required to draw a histogram
@@ -136,7 +138,9 @@ Click on the different tabs to learn more about Florida's demographics and polit
        ggplotly(ggplot(data = data_by_county, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
                   geom_sf(aes(fill = party_control)) +
                   theme_map() + theme_economist() + scale_fill_fivethirtyeight() +
-                  labs(title = "County Partisanship by Majority of Registered Voters", fill = NULL) +
+                  labs(title = "County Partisanship by Majority of Registered Voters", 
+                       subtitle = "Hover over each county to learn about some of its demographic trends.", 
+                       fill = NULL) +
                   theme(
                     panel.grid.major = element_line(colour = 'transparent'), 
                     line = element_blank(),
@@ -146,7 +150,7 @@ Click on the different tabs to learn more about Florida's demographics and polit
         })
      
      
-     output$county_table <- renderPlot({
+     output$county_table <- render_gt({
        
        no_geometry_county %>% 
        select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>%
@@ -166,7 +170,8 @@ Click on the different tabs to learn more about Florida's demographics and polit
                         columns = vars(dollar))) %>% 
          fmt_currency(columns = vars(dollar)) %>% 
          fmt_percent(columns = vars(percent), decimals = 1) %>% 
-         fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0)
+         fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0) 
+       
        
        })
 }

@@ -161,7 +161,7 @@ without_geometry %>%
 
 # look into shiny themes, and 
 
-# fill ="Majority Party Affiliation"
+
   
 # Florida's median annual income is $61,442 This is the distribution by County. 
 
