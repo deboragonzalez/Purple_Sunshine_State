@@ -12,11 +12,11 @@ library(gt)
 library(tigris)
 library(janitor)
 library(ggthemes)
-library(shiny)
-library(shinythemes)
 library(sf)
 library(fivethirtyeight)
 library(plotly)
+library(shiny)
+library(shinythemes)
 
 
 party_affiliation_years <- read_rds("party_affiliation_years")
@@ -30,7 +30,9 @@ no_geometry_county <- read_rds("no_geometry_county")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-   
+    # Choosing theme 
+   theme = shinytheme("journal"),
+  
    # Application title
    titlePanel("The Purple Sunshine State: Florida's Population & Politics"),
    
@@ -55,7 +57,7 @@ ui <- fluidPage(
                     plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
            tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
                     plotlyOutput("map_fl")),
-           tabPanel(h4("Florida in Numbers"),
+           tabPanel(h4("A Deeper Look at the Numbers"),
                     gt_output("county_table")))
            )))
 
@@ -76,24 +78,24 @@ Click on the different tabs to learn more about Florida's demographics and polit
     <br/><li>U.S. Census Bureau, 2013-2017 American Community Survey 5-Year Estimates 
     
               <ul>
-              <br/> <li>Median Family Income (In 2017 Inflation-Adjusted Dollars): State -- County </li>
-              <br/> <li>Percent Of People Who Are Foreign Born: State -- County </li>
+              <li>Median Family Income (In 2017 Inflation-Adjusted Dollars): State -- County </li>
+              <li>Percent Of People Who Are Foreign Born: State -- County </li>
               </ul>
      </li>
-     <br/><br/><li>Florida Department of State - Division of Elections Voter Registration
+     <br/><li>Florida Department of State - Division of Elections Voter Registration
      
               <ul>
-              <br/><li>Registration reports by County (2019) </li>
-              <br/><li>Registration reports by County and by Party (1972-2019) </li>
+              <li>Registration reports by County (2019) </li>
+              <li>Registration reports by County and by Party (1972-2019) </li>
               </ul>
     </li>
-    <br/><br/><li>Tigris R Package: Shapes files - by County, State #12 </li>
+    <br/><li>Tigris R Package: Shapes files - by County, State #12 </li>
     </ul>
     <br/>
     <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
     <p></p>
-    <br/>
-    <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a><br/>"})
+    <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a>
+    <br/>"})
    
   output$percents <- renderPlot({
     party_percents <- party_affiliation_years %>% 
@@ -167,9 +169,12 @@ Click on the different tabs to learn more about Florida's demographics and polit
                     party_control = "Dominant Party",
                     percent = "Percent of Foreign Born",
                     dollar = "Median Family Income") %>% 
-         tab_footnote(footnote = "Florida's median annual income is $61,442 This is the distribution by County.",
+         tab_footnote(footnote = "Florida's weighted median annual income is $61,442. The average median income of all counties is $57,448.",
                       locations = cells_column_labels(
-                        columns = vars(dollar))) %>% 
+                        columns = vars(dollar))) %>%
+         tab_footnote(footnote = "Florida's weighted average of foreign born population is 20.2%. The unweighted average of all counties is 9.6%.", 
+                      locations = cells_column_labels(
+                        columns = vars(percent))) %>% 
          fmt_currency(columns = vars(dollar)) %>% 
          fmt_percent(columns = vars(percent), decimals = 1) %>% 
          fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0) 

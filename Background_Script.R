@@ -1,6 +1,8 @@
 # Florida's Population & Politics Project
 # By: Debora Gonzalez
 
+
+
 library(tidyverse)
 library(readxl)
 library(gt)
