@@ -1,5 +1,7 @@
 # The Sunshine State Turns Purple on Election Day
 ### Final Project for Data Visualization at Harvard University
+#### Created By: Debora Gonzalez
+
 
 This project explores Florida's political allegiance changes from 1972 to the present and highlights selected demographic trends that may relate to party affiliation in the Sunshine State.
 
