@@ -240,9 +240,24 @@ Click on the different tabs to learn more about Florida's demographics and polit
      
      
      # The map is made with a composite dataframe that includes all by county
-     # data and the shape files from the tigris package. It is a ggplot -
+     # dataframes and the shape files from the tigris package. It is a ggplot -
      # geom_sf embedded in a ggplotly, which allows for the hover tooltip, which
-     # provides useful political and demographic data about each county. 
+     # provides useful political and demographic data about each county to be
+     # displayed as the viewer hovers over each county respectively. After
+     # assigning my ggplot to the data_by_county dataframe, I set "text" equal
+     # to the variables I want to display in my tooltip in the aesthetics. It is
+     # set using the call "paste()", html syntax, and a comma after each object.
+     # The text to be displayed goes in " " and so does the html space code. The
+     # variables are not coded. After, we set fill (inside shape color) equal to
+     # party_control (binary variable that indicates whether a county is
+     # majority democrat or republican) in the geom_sf aesthetics. This helps to
+     # fill in with party colors later on. I use theme_map to ensure a map axis
+     # and lightened grid. I then use theme_economist to maintain font &
+     # aesthetic uniformity throughout the project. Because I am coloring this
+     # map by party allegiance of counties, I use scale_fill_fivethirtyeight,
+     # which automatically recognizes a party related variable and assigns it
+     # party colors. I use fill and not color because color only colors borders,
+     # so I leave that with default settings.
      
      output$map_fl <- renderPlotly({ 
        ggplotly(ggplot(data = data_by_county, 
@@ -255,7 +270,7 @@ Click on the different tabs to learn more about Florida's demographics and polit
                   theme_economist() + 
                   scale_fill_fivethirtyeight() +
                   labs(title = "County Partisanship by Majority of Registered Voters", 
-                       subtitle = "Hover over each county to learn about some of its demographic trends.", 
+                       subtitle = "Hover over each county to learn about some of its demographic trends.",
                        fill = NULL) +
                   theme(
                     panel.grid.major = element_line(colour = 'transparent'), 
