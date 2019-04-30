@@ -257,7 +257,19 @@ Click on the different tabs to learn more about Florida's demographics and polit
      # map by party allegiance of counties, I use scale_fill_fivethirtyeight,
      # which automatically recognizes a party related variable and assigns it
      # party colors. I use fill and not color because color only colors borders,
-     # so I leave that with default settings.
+     # so I leave that with default settings. I use the labs to explain the
+     # graphic and make fill - NULL because it's not necessary to have a legend
+     # title given that the colors are labeled and are self-explanatory from the
+     # title. The theme function helps to clean up the background, axis, ticks,
+     # box border lines, etc. I made both the grid and plot background
+     # transparent to get rid of both the plot lines and the map grid. After
+     # extensive research, I figured out the syntaxt for each call. Setting
+     # axis.ticks, axis.text, and line to element_blank() puts the map on a
+     # clear background, which accentuates the map shape and colors for the
+     # purpose of data display. After theme, I place a comma and call tooltip
+     # setting it equal to "text", so that it will show the variable values &
+     # text I identified earlier in ggplot aesthetics and not the fill variable
+     # from geom_sf.
      
      output$map_fl <- renderPlotly({ 
        ggplotly(ggplot(data = data_by_county, 
