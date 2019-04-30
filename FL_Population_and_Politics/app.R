@@ -130,11 +130,12 @@ server <- function(input, output) {
   output$text <- renderText({
     
     "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
-     <h4> Final Project for Data Visualization at Harvard University </h4>
-
+     <h4> Final Project for Data Visualization Course at Harvard University </h4>
+     <h5> By: Debora Gonzalez </h5> 
+    <br/>
     <p>This project explores Florida's political allegiance changes from 1972 to the present 
 and highlights selected demographic trends that may relate to party affiliation in the Sunshine State. 
-Click on the different tabs to learn more about Florida's demographics and politics.</p></b> <br/><br/>
+Click on the different tabs to learn more about Florida's demographics and politics.</p></b> <br/>
 
     Using data from: <br/>
     <ul>
@@ -158,7 +159,11 @@ Click on the different tabs to learn more about Florida's demographics and polit
     <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
     <p></p>
     <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a>
-    <br/>"})
+    <br/> <br/>
+    <h5> Contact the creator: <h5/>
+    Email Debora: deboragonzalez@college.harvard.edu
+    <br/> <a href='https://www.linkedin.com/in/debora-gonzalez'>Connect with Debora on LinkedIn</a>
+    <br/> <br/>"})
   
   
   # In order to prepare my data to be plotted, I will create a new object

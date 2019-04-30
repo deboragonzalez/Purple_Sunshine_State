@@ -5,8 +5,8 @@ account: debi-g
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 886333
-bundleId: 2047748
+bundleId: 2048707
 url: https://debi-gonzalez.shinyapps.io/FL_Population_and_Politics/
-when: 1556568838.8182
+when: 1556599620.68149
 asMultiple: FALSE
 asStatic: FALSE
