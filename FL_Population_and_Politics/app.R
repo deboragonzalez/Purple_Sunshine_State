@@ -3,40 +3,94 @@
 # By: Debora Gonzalez
 
 
-# Data Setup:
-
+# These libraries are necessary for the functions and themes used in this app.
 
 library(tidyverse)
+
+# General functions to organize data.
+
 library(readxl)
+
+# Necessary to read in the data.
+
 library(gt)
+
+# To be used in designing and formatting a table.
+
 library(tigris)
-library(janitor)
+
+# Contains the map files used for the map portion of the app
+
 library(ggthemes)
+
+# Contains the theme I want to use to design my plots/graphs.
+
 library(sf)
+
+# Allows me to work with the Tigris map files.
+
 library(fivethirtyeight)
+
+# Contains the party color schemes I want to use to color my graphics.
+
 library(plotly)
+
+# Provides helpful mapping tools with interactive tooltip.
+
+library(scales)
+
+# Allows to convert the axis number labels into regular notation.
+
 library(shiny)
 library(shinythemes)
 
+# Provides the background for the app.
+
+
+
+# Data Setup: 
+# These datasets have been cleaned and built for the purpose of this app. The
+# original (raw) data can be found in the Github repository for this app and its
+# Background Script file.
 
 party_affiliation_years <- read_rds("party_affiliation_years")
 
-# Spreadsheet containing voter registration of FL voters by party as
+# Dataframe containing voter registration of FL voters by party as
 # of Feb. 2019 from 1972 to 2019.
 
 data_by_county <- read_rds("data_by_county")
 
+# SF dataframe containing number of registered voters by party, dominant party,
+# median family income, percent foreign born, and geometry variables. To be used
+# in mapping.
+
 no_geometry_county <- read_rds("no_geometry_county")
 
-# Define UI for application that draws a histogram
+# Dataframe with same information as above, but without the geometry variable
+# that made the file SF.
+
+# Defining UI for multi-tab, interactive application 
+
 ui <- fluidPage(
-    # Choosing theme 
+  
+    # Choosing theme: after exploring the options, journal seemed like the most
+    # fitting and aesthetically pleasant
+  
    theme = shinytheme("journal"),
   
+   
    # Application title
+   
    titlePanel("The Purple Sunshine State: Florida's Population & Politics"),
    
-   # Sidebar with a slider input for number of bins 
+   
+   # Sidebar with a slider input for years between 1972 to 2019 Using the years
+   # variable from the party_affiliation_years dataset I can create a slider
+   # that will control the number of bars appearing in the bar plots to follow
+   # and the zoom option in the line plot, which essentially show the defined
+   # range of years. It allows the viewer to observe gradual trends and more
+   # detailed year to year changes.
+   
    sidebarLayout(
       sidebarPanel(
         sliderInput("year", 
@@ -48,7 +102,10 @@ ui <- fluidPage(
       ),
    
       
-      # Show a plot of the generated distribution
+      # The main panel outlines the number of tabs and output functions (by
+      # type) the app will have. Each key will be used to render the respective
+      # object in the server part of the app.
+      
       mainPanel(
          tabsetPanel(
            tabPanel(h4("About this Project"),
@@ -62,10 +119,16 @@ ui <- fluidPage(
            )))
 
 
-# Define server logic required to draw a histogram
+# Define server logic required to draw the app
+
 server <- function(input, output) {
   
+  # I used htmlOutput to render formatted text using html syntax. The first tab
+  # shows a brief description of the project, the raw data sources,
+  # acknowledgements, and a link to the repository.
+  
   output$text <- renderText({
+    
     "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
      <h4> Final Project for Data Visualization at Harvard University </h4>
 
@@ -96,6 +159,22 @@ Click on the different tabs to learn more about Florida's demographics and polit
     <p></p>
     <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a>
     <br/>"})
+  
+  
+  # In order to prepare my data to be plotted, I will create a new object
+  # (dataframe), which I will later use to graph. This plot aims to show the
+  # percent changes in registered voters over time. To do so, I mutate the
+  # variables that correspond to the number of registered republicans,
+  # democrats, and others by dividing their values by the total number of
+  # registered voters (variable total) and then multiplying by 100. Then, I
+  # filter so that the graph only shows the output for the years inputted in the
+  # slider built above. To do so, we filter the variable year input$"key". Then,
+  # we are ready to build the ggplot. We will use the modified dataset we
+  # created, so its name (party_percents) goes inside the ggplot call. This
+  # graph requires three geom_lines, one for each "party". The labs and theme
+  # provide a professional aesthetic and guide the viewer in his/her analysis.
+  # The scale_y_continuous command is used to ensure the y axis labels are not
+  # in scientific notation.
    
   output$percents <- renderPlot({
     party_percents <- party_affiliation_years %>% 
@@ -111,37 +190,70 @@ Click on the different tabs to learn more about Florida's demographics and polit
       labs(y = "Percentage of Registered Voters",
            x = "Year Range",
            title = "Changes in Political Allegiance Over Time") + 
-      theme_economist()
+      theme_economist() +
+      scale_y_continuous(labels = comma)
     })
   
+  
+  # The following two bar plots are structurally the same and show the raw
+  # number of registered voters over time for the two major parties
+  # respectively. The new subset created takes the party_affiliation_years
+  # dataset and filters it for the inputted years (the same way as in the line
+  # graph above) to ensure the plot outputs the data for the years selected. The
+  # ggplot refers to the newly created data subset. It contains the filtered
+  # year on the x axis and the registered number of voters (of the corresponding
+  # party) on the y axis. On the geom_bar aesthetics, I assign fill (the inside
+  # coloring) to party color (red for Republicans and Blue for Democrats) and
+  # the color (the borders/outline) itself to black to facilitate visual
+  # clarity. I decided not to label the y axis because the title of the graph
+  # makes it self-explanatory. I use theme_economist for aesthetic consistency
+  # and the scale_y_continuous call to avoid scientific notation.
+  
    output$reps <- renderPlot({
-     gop_subset <- party_affiliation_years %>% filter(year >= input$year[1] & year <= input$year[2])
+     gop_subset <- party_affiliation_years %>% 
+       filter(year >= input$year[1] & year <= input$year[2])
      
      ggplot(gop_subset, aes(x = year, y = republican_party_of_florida)) + 
      geom_bar(stat="identity", fill = "red", colour = "black") +
        labs(y = NULL,
             x = "Year Range",
             title = "Number of Registered Republicans over Time") + 
-       theme_economist()
+       theme_economist()+
+       scale_y_continuous(labels = comma)
    })
    
      
      output$dems <- renderPlot({
-       gop_subset <- party_affiliation_years %>% filter(year >= input$year[1] & year <= input$year[2])
+       gop_subset <- party_affiliation_years %>% 
+         filter(year >= input$year[1] & year <= input$year[2])
        
        ggplot(gop_subset, aes(x = year, y = florida_democratic_party)) + 
          geom_bar(stat="identity", fill = "blue", colour = "black") +
          labs(y = NULL,
               x = "Year Range",
               title = "Number of Registered Democrats over Time") + 
-         theme_economist()
+         theme_economist()+
+         scale_y_continuous(labels = scales::comma)
          
      })
      
+     
+     
+     # The map is made with a composite dataframe that includes all by county
+     # data and the shape files from the tigris package. It is a ggplot -
+     # geom_sf embedded in a ggplotly, which allows for the hover tooltip, which
+     # provides useful political and demographic data about each county. 
+     
      output$map_fl <- renderPlotly({ 
-       ggplotly(ggplot(data = data_by_county, aes(text = paste(NAMELSAD, "<br>", "Major Party:", party_control, "<br>", "Foreign Born Population:", percent,"%", "<br>", "Median Family Income: $",dollar))) +
+       ggplotly(ggplot(data = data_by_county, 
+                       aes(text = paste(NAMELSAD, "<br>", 
+                                        "Major Party:", party_control, "<br>", 
+                                        "Foreign Born Population:", percent,"%", "<br>", 
+                                        "Median Family Income: $",dollar))) +
                   geom_sf(aes(fill = party_control)) +
-                  theme_map() + theme_economist() + scale_fill_fivethirtyeight() +
+                  theme_map() + 
+                  theme_economist() + 
+                  scale_fill_fivethirtyeight() +
                   labs(title = "County Partisanship by Majority of Registered Voters", 
                        subtitle = "Hover over each county to learn about some of its demographic trends.", 
                        fill = NULL) +
@@ -150,15 +262,24 @@ Click on the different tabs to learn more about Florida's demographics and polit
                     line = element_blank(),
                     axis.text = element_blank(),
                     axis.ticks = element_blank(),
-                    plot.background = element_rect(fill = "transparent")), tooltip = c("text"))
+                    plot.background = element_rect(fill = "transparent")), 
+                tooltip = c("text"))
         })
      
      
      output$county_table <- render_gt({
        
+       # This table shows the numerical data we have been exploring through the
+       # interactive map in the previous tab. It utilizes the dataframe that was
+       # transformed into a tibble in the background script. 
+       
        no_geometry_county %>% 
-       select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>%
+         select(NAMELSAD, florida_democratic_party, republican_party_of_florida, party_control, percent, dollar) %>%
          mutate(percent = percent/100) %>% 
+         
+         # I'm mutating the variable percent into a percent decimal so that I
+         # can later use fmt_percent to give it proper percent formatting.
+         
          gt() %>% 
          tab_header(title = "The Purple State in Numbers",
                     subtitle = "Politics & Selected Demographics in Florida by County") %>% 
@@ -169,15 +290,31 @@ Click on the different tabs to learn more about Florida's demographics and polit
                     party_control = "Dominant Party",
                     percent = "Percent of Foreign Born",
                     dollar = "Median Family Income") %>% 
+         
+         # Once the table is a gt, I add a title and subtitle that guide the
+         # viewer in understanding the data at hand. I can use tab_spanner and
+         # cols_label to name and group my variables.
+         
          tab_footnote(footnote = "Florida's weighted median annual income is $61,442. The average median income of all counties is $57,448.",
                       locations = cells_column_labels(
                         columns = vars(dollar))) %>%
          tab_footnote(footnote = "Florida's weighted average of foreign born population is 20.2%. The unweighted average of all counties is 9.6%.", 
                       locations = cells_column_labels(
                         columns = vars(percent))) %>% 
+         
+         # These numbers are taken from the U.S. Census data. Including them as
+         # footnotes is a useful tool, so I made the footnote refer to the
+         # column/variable itself.
+         
          fmt_currency(columns = vars(dollar)) %>% 
-         fmt_percent(columns = vars(percent), decimals = 1) %>% 
-         fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  decimals = 0) 
+         fmt_percent(columns = vars(percent), 
+                     decimals = 1) %>% 
+         fmt_number(columns = vars(florida_democratic_party, republican_party_of_florida),  
+                    decimals = 0) 
+       
+         # These last few lines provide a professional look to the data table by
+         # formatting each number with its corresponding labels (percent,
+         # commas, etc.
        
        
        })

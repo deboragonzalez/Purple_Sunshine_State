@@ -2,16 +2,43 @@
 # By: Debora Gonzalez
 
 
+# These libraries are necessary for the functions and themes used in this app.
 
 library(tidyverse)
+
+# General functions to organize data.
+
 library(readxl)
+
+# Necessary to read in the data.
+
 library(gt)
+
+# To be used in designing and formatting a table.
+
 library(tigris)
-library(janitor)
+
+# Contains the map files used for the map portion of the app
+
 library(ggthemes)
+
+# Contains the theme I want to use to design my plots/graphs.
+
 library(sf)
+
+# Allows me to work with the Tigris map files.
+
 library(fivethirtyeight)
+
+# Contains the party color schemes I want to use to color my graphics.
+
 library(plotly)
+
+# Provides helpful mapping tools with interactive tooltip.
+
+library(janitor)
+
+# Will help to clean out data before it can be used/joined.
 
 
 data1 <- read_excel("Data/Voter_Registration_By_County_and_Party_Feb_2019.xlsx") %>% 
