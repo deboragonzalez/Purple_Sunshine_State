@@ -399,7 +399,7 @@ server <- function(input, output) {
      output$text <- renderText({
        
        "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
-       <h4> Final Project for Data Visualization Course at Harvard University </h4>
+       <h4> Data Visualization Project at Harvard University </h4>
        <h5> By: Debora Gonzalez </h5> 
        <br/>
        <p>This project explores Florida's political allegiance changes from 1972 to the present 
