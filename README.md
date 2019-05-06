@@ -1,5 +1,5 @@
 # The Sunshine State Turns Purple on Election Day
-### Final Project for Data Visualization at Harvard University
+### Data Visualization Project at Harvard University
 #### Created By: Debora Gonzalez
 
 
