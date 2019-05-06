@@ -41,8 +41,16 @@ library(scales)
 
 # Allows to convert the axis number labels into regular notation.
 
+library(viridis)
+
+# Allows to color by scale.
+
+library(DT)
+
 library(shiny)
 library(shinythemes)
+library(shinyWidgets)
+
 
 # Provides the background for the app.
 
@@ -73,6 +81,7 @@ no_geometry_county <- read_rds("no_geometry_county")
 
 ui <- fluidPage(
   
+  setBackgroundImage(src = "https://cdn.wallpapersafari.com/42/23/nj39Zm.jpg"),
     # Choosing theme: after exploring the options, journal seemed like the most
     # fitting and aesthetically pleasant
   
@@ -82,88 +91,158 @@ ui <- fluidPage(
    # Application title
    
    titlePanel("The Purple Sunshine State: Florida's Population & Politics"),
+   h4("A View into Florida's Political Arena"),
    
-   
-   # Sidebar with a slider input for years between 1972 to 2019 Using the years
-   # variable from the party_affiliation_years dataset I can create a slider
-   # that will control the number of bars appearing in the bar plots to follow
-   # and the zoom option in the line plot, which essentially show the defined
-   # range of years. It allows the viewer to observe gradual trends and more
-   # detailed year to year changes.
-   
-   sidebarLayout(
-      sidebarPanel(
-        sliderInput("year", 
-                    label = h4("Select Years:"), 
-                    min = min(unique(party_affiliation_years$year)), 
-                    max = max(unique(party_affiliation_years$year)),
-                    value = c(1972, 2019),
-                    sep = "")
-      ),
-   
+   navbarPage("",
       
-      # The main panel outlines the number of tabs and output functions (by
+      # The panel outlines the number of tabs and output functions (by
       # type) the app will have. Each key will be used to render the respective
       # object in the server part of the app.
       
-      mainPanel(
-         tabsetPanel(
-           tabPanel(h4("About this Project"),
-                    htmlOutput("text")),
-           tabPanel(h4("Political Allegiance over Time"),
-                    plotOutput("percents"), br(), plotOutput("reps"), br(), plotOutput("dems")), 
-           tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
-                    plotlyOutput("map_fl")),
-           tabPanel(h4("A Deeper Look at the Numbers"),
-                    gt_output("county_table")))
-           )))
-
+            tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
+                     h4("Hover over each county to learn about some of its demographic trends."),
+                     plotlyOutput("map_fl"), plotlyOutput("map_fl2"), plotlyOutput("map_fl3"),
+                     h5("Note that the maps in this app do not account for independent or third-party registered voters. 
+                        The allegiance and/or color of each county are selected based on the party with the greater raw 
+                        number of registered voters respectively. It is not representative of independent registered voters 
+                        or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their 
+                        allegiance on this map.")),
+            tabPanel(h4("Political Allegiance over Time"),
+                    sidebarLayout(
+                      sidebarPanel(
+                        sliderInput("year", 
+                                    label = h4("Select Years:"), 
+                                    min = min(unique(party_affiliation_years$year)), 
+                                    max = max(unique(party_affiliation_years$year)),
+                                    value = c(1972, 2019),
+                                    sep = "")),
+                      
+                      # Sidebar with a slider input for years between 1972 to 2019 Using the years
+                      # variable from the party_affiliation_years dataset I can create a slider
+                      # that will control the number of bars appearing in the bar plots to follow
+                      # and the zoom option in the line plot, which essentially show the defined
+                      # range of years. It allows the viewer to observe gradual trends and more
+                      # detailed year to year changes.
+                      
+                        # selectInput("select_party", 
+                        #             label = h4("Select Party:"),
+                        #             choices = list("Republican Party" = "republican_party_of_florida",
+                        #                            "Democratic Party" = "florida_democratic_party"),
+                        #             multiple = FALSE)),
+                      
+                    mainPanel(h3("The Allegiance Trends"), plotOutput("percents"), 
+                              h6("This graph shows the percentage of registered republican, democrat, and independent voters. 
+                                 The increase in independent voters adds to the ambivalent political arena in Florida"), br(),
+                              plotOutput("reps"), br(), plotOutput("dems")))),
+            tabPanel(h4("A Deeper Look at the Numbers"),
+                             gt_output("county_table")),
+            tabPanel(h4("About this Project"),
+                          htmlOutput("text"))
+   ))
 
 # Define server logic required to draw the app
 
 server <- function(input, output) {
   
-  # I used htmlOutput to render formatted text using html syntax. The first tab
-  # shows a brief description of the project, the raw data sources,
-  # acknowledgements, and a link to the repository.
+  # The map is made with a composite dataframe that includes all by county
+  # dataframes and the shape files from the tigris package. It is a ggplot -
+  # geom_sf embedded in a ggplotly, which allows for the hover tooltip, which
+  # provides useful political and demographic data about each county to be
+  # displayed as the viewer hovers over each county respectively. After
+  # assigning my ggplot to the data_by_county dataframe, I set "text" equal to
+  # the variables I want to display in my tooltip in the aesthetics. It is set
+  # using the call "paste()", html syntax, and a comma after each object. The
+  # text to be displayed goes in " " and so does the html space code. The
+  # variables are not coded. After, we set fill (inside shape color) equal to
+  # party_control (binary variable that indicates whether a county is majority
+  # democrat or republican) in the geom_sf aesthetics. This helps to fill in
+  # with party colors later on. I use theme_map to ensure a map axis and
+  # lightened grid. I then use theme_economist to maintain font & aesthetic
+  # uniformity throughout the project. Because I am coloring this map by party
+  # allegiance of counties, I use scale_fill_fivethirtyeight, which
+  # automatically recognizes a party related variable and assigns it party
+  # colors. I use fill and not color because color only colors borders, so I
+  # leave that with default settings. I use the labs to explain the graphic and
+  # make fill - NULL because it's not necessary to have a legend title given
+  # that the colors are labeled and are self-explanatory from the title. The
+  # theme function helps to clean up the background, axis, ticks, box border
+  # lines, etc. I made both the grid and plot background transparent to get rid
+  # of both the plot lines and the map grid. After extensive research, I figured
+  # out the syntaxt for each call. Setting axis.ticks, axis.text, and line to
+  # element_blank() puts the map on a clear background, which accentuates the
+  # map shape and colors for the purpose of data display. After theme, I place a
+  # comma and call tooltip setting it equal to "text", so that it will show the
+  # variable values & text I identified earlier in ggplot aesthetics and not the
+  # fill variable from geom_sf. The other two maps use the same steps except
+  # they color by different variables to visually examine the geographic
+  # distribution of each variable.
   
-  output$text <- renderText({
-    
-    "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
-     <h4> Final Project for Data Visualization Course at Harvard University </h4>
-     <h5> By: Debora Gonzalez </h5> 
-    <br/>
-    <p>This project explores Florida's political allegiance changes from 1972 to the present 
-and highlights selected demographic trends that may relate to party affiliation in the Sunshine State. 
-Click on the different tabs to learn more about Florida's demographics and politics.</p></b> <br/>
-
-    Using data from: <br/>
-    <ul>
-    <br/><li>U.S. Census Bureau, 2013-2017 American Community Survey 5-Year Estimates 
-    
-              <ul>
-              <li>Median Family Income (In 2017 Inflation-Adjusted Dollars): State -- County </li>
-              <li>Percent Of People Who Are Foreign Born: State -- County </li>
-              </ul>
-     </li>
-     <br/><li>Florida Department of State - Division of Elections Voter Registration
-     
-              <ul>
-              <li>Registration reports by County (2019) </li>
-              <li>Registration reports by County and by Party (1972-2019) </li>
-              </ul>
-    </li>
-    <br/><li>Tigris R Package: Shapes files - by County, State #12 </li>
-    </ul>
-    <br/>
-    <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
-    <p></p>
-    <a href='https://github.com/deboragonzalez/Purple_Sunsine_State'>Learn more about this project: Github</a>
-    <br/> <br/>
-    <h5> Contact the creator: <h5/>
-    Email Debora: deboragonzalez@college.harvard.edu
-    <br/> <a href='https://www.linkedin.com/in/debora-gonzalez'>Connect with Debora on LinkedIn</a>
-    <br/> <br/>"})
+  output$map_fl <- renderPlotly({ 
+    ggplotly(ggplot(data = data_by_county, 
+                    aes(text = paste(NAMELSAD, "<br>", 
+                                     "Major Party:", party_control, "<br>", 
+                                     "Foreign Born Population:", percent,"%", "<br>", 
+                                     "Median Family Income: $",dollar))) +
+               geom_sf(aes(fill = party_control)) +
+               theme_map() + 
+               theme_economist() + 
+               scale_fill_fivethirtyeight() +
+               labs(title = "County Partisanship by Majority of Registered Voters", 
+                    subtitle = "Hover over each county to learn about some of its demographic trends.",
+                    fill = NULL) +
+               theme(
+                 panel.grid.major = element_line(colour = 'transparent'), 
+                 line = element_blank(),
+                 axis.text = element_blank(),
+                 axis.ticks = element_blank(),
+                 plot.background = element_rect(fill = "transparent")), 
+             tooltip = c("text"))
+  })
+  
+  
+  output$map_fl2 <- renderPlotly({ 
+    ggplotly(ggplot(data = data_by_county, 
+                    aes(text = paste(NAMELSAD, "<br>", 
+                                     "Major Party:", party_control, "<br>", 
+                                     "Foreign Born Population:", percent,"%", "<br>", 
+                                     "Median Family Income: $",dollar))) +
+               geom_sf(aes(fill = dollar)) +
+               theme_map() + 
+               theme_economist() + 
+               labs(title = "Median Family Income Across Florida by County", 
+                    subtitle = "Hover over each county to learn about some of its demographic trends.",
+                    fill = NULL) +
+               scale_fill_viridis() +
+               theme(
+                 panel.grid.major = element_line(colour = 'transparent'), 
+                 line = element_blank(),
+                 axis.text = element_blank(),
+                 axis.ticks = element_blank(),
+                 plot.background = element_rect(fill = "transparent")), 
+             tooltip = c("text"))
+  })
+  
+  
+  output$map_fl3 <- renderPlotly({ 
+    ggplotly(ggplot(data = data_by_county, 
+                    aes(text = paste(NAMELSAD, "<br>", 
+                                     "Major Party:", party_control, "<br>", 
+                                     "Foreign Born Population:", percent,"%", "<br>", 
+                                     "Median Family Income: $",dollar))) +
+               geom_sf(aes(fill = percent)) +
+               theme_map() + 
+               theme_economist() + 
+               labs(title = "Percent of Foreign Born Population Across Florida by County", 
+                    subtitle = "Hover over each county to learn about some of its demographic trends.",
+                    fill = NULL) +
+               theme(
+                 panel.grid.major = element_line(colour = 'transparent'), 
+                 line = element_blank(),
+                 axis.text = element_blank(),
+                 axis.ticks = element_blank(),
+                 plot.background = element_rect(fill = "transparent")), 
+             tooltip = c("text"))
+  })
   
   
   # In order to prepare my data to be plotted, I will create a new object
@@ -189,12 +268,14 @@ Click on the different tabs to learn more about Florida's demographics and polit
       filter(year >= input$year[1] & year <= input$year[2])
     
     ggplot(party_percents) +
-      geom_line(aes(x =year, y = percent_rep),  color = "red3", size = 1, show.legend = FALSE) + 
-      geom_line(aes(x = year, y = percent_dem), color = "blue4", size = 1, show.legend = FALSE) +
-      geom_line(aes(x = year, y = percent_other), color = "green", size = 1, show.legend = FALSE) +
+      geom_line(aes(x =year, y = percent_rep,  color = "Republican"), size = 1) + 
+      geom_line(aes(x = year, y = percent_dem, color = "Democrat"), size = 1) +
+      geom_line(aes(x = year, y = percent_other, color = "Independent"), size = 1) +
+      scale_color_manual(values = c("Republican" = "red3", "Democrat" = "blue4", "Independent" = "green")) +
       labs(y = "Percentage of Registered Voters",
            x = "Year Range",
-           title = "Changes in Political Allegiance Over Time") + 
+           title = "Changes in Political Allegiance Over Time",
+           color = "Party Allegiance:") + 
       theme_economist() +
       scale_y_continuous(labels = comma)
     })
@@ -219,13 +300,27 @@ Click on the different tabs to learn more about Florida's demographics and polit
        filter(year >= input$year[1] & year <= input$year[2])
      
      ggplot(gop_subset, aes(x = year, y = republican_party_of_florida)) + 
-     geom_bar(stat="identity", fill = "red", colour = "black") +
+       geom_bar(stat="identity", fill = "red", colour = "black") +
        labs(y = NULL,
             x = "Year Range",
             title = "Number of Registered Republicans over Time") + 
        theme_economist()+
-       scale_y_continuous(labels = comma)
+       scale_y_continuous(labels = scales::comma)
+
    })
+     
+#       parties <- switch(input$select_party,
+#                         "Republican Party" = gop_subset$republican_party_of_florida,
+#                         "Democratic Party" = gop_subset$florida_democratic_party)
+#       parties$min <- input$year[1]
+#       parties$max <- input$year[2]
+#      
+#      ggplot(gop_subset, aes(x = year, y = input$select_party)) + 
+#      geom_bar(stat = 'identity') 
+#        labs(y = NULL,
+#             x = "Year Range",
+#             title = "Number of Registered Voters over Time") + 
+#        theme_economist()
    
      
      output$dems <- renderPlot({
@@ -242,61 +337,7 @@ Click on the different tabs to learn more about Florida's demographics and polit
          
      })
      
-     
-     
-     # The map is made with a composite dataframe that includes all by county
-     # dataframes and the shape files from the tigris package. It is a ggplot -
-     # geom_sf embedded in a ggplotly, which allows for the hover tooltip, which
-     # provides useful political and demographic data about each county to be
-     # displayed as the viewer hovers over each county respectively. After
-     # assigning my ggplot to the data_by_county dataframe, I set "text" equal
-     # to the variables I want to display in my tooltip in the aesthetics. It is
-     # set using the call "paste()", html syntax, and a comma after each object.
-     # The text to be displayed goes in " " and so does the html space code. The
-     # variables are not coded. After, we set fill (inside shape color) equal to
-     # party_control (binary variable that indicates whether a county is
-     # majority democrat or republican) in the geom_sf aesthetics. This helps to
-     # fill in with party colors later on. I use theme_map to ensure a map axis
-     # and lightened grid. I then use theme_economist to maintain font &
-     # aesthetic uniformity throughout the project. Because I am coloring this
-     # map by party allegiance of counties, I use scale_fill_fivethirtyeight,
-     # which automatically recognizes a party related variable and assigns it
-     # party colors. I use fill and not color because color only colors borders,
-     # so I leave that with default settings. I use the labs to explain the
-     # graphic and make fill - NULL because it's not necessary to have a legend
-     # title given that the colors are labeled and are self-explanatory from the
-     # title. The theme function helps to clean up the background, axis, ticks,
-     # box border lines, etc. I made both the grid and plot background
-     # transparent to get rid of both the plot lines and the map grid. After
-     # extensive research, I figured out the syntaxt for each call. Setting
-     # axis.ticks, axis.text, and line to element_blank() puts the map on a
-     # clear background, which accentuates the map shape and colors for the
-     # purpose of data display. After theme, I place a comma and call tooltip
-     # setting it equal to "text", so that it will show the variable values &
-     # text I identified earlier in ggplot aesthetics and not the fill variable
-     # from geom_sf.
-     
-     output$map_fl <- renderPlotly({ 
-       ggplotly(ggplot(data = data_by_county, 
-                       aes(text = paste(NAMELSAD, "<br>", 
-                                        "Major Party:", party_control, "<br>", 
-                                        "Foreign Born Population:", percent,"%", "<br>", 
-                                        "Median Family Income: $",dollar))) +
-                  geom_sf(aes(fill = party_control)) +
-                  theme_map() + 
-                  theme_economist() + 
-                  scale_fill_fivethirtyeight() +
-                  labs(title = "County Partisanship by Majority of Registered Voters", 
-                       subtitle = "Hover over each county to learn about some of its demographic trends.",
-                       fill = NULL) +
-                  theme(
-                    panel.grid.major = element_line(colour = 'transparent'), 
-                    line = element_blank(),
-                    axis.text = element_blank(),
-                    axis.ticks = element_blank(),
-                    plot.background = element_rect(fill = "transparent")), 
-                tooltip = c("text"))
-        })
+ 
      
      
      output$county_table <- render_gt({
@@ -350,6 +391,65 @@ Click on the different tabs to learn more about Florida's demographics and polit
        
        
        })
+     
+     # I used htmlOutput to render formatted text using html syntax. The first tab
+     # shows a brief description of the project, the raw data sources,
+     # acknowledgements, and a link to the repository.
+     
+     output$text <- renderText({
+       
+       "<h3><b>The Sunshine State Turns Purple on Election Day</b></h3>
+       <h4> Final Project for Data Visualization Course at Harvard University </h4>
+       <h5> By: Debora Gonzalez </h5> 
+       <br/>
+       <p>This project explores Florida's political allegiance changes from 1972 to the present 
+       and highlights selected demographic trends that may relate to party affiliation in the Sunshine State. </br> </br> 
+
+       Click on the different tabs to learn more about Florida's demographics and politics. </br> </br>
+
+       The maps and graphics in this app do not account for independent or third-party registered voters when 
+       determining the 'allegiance' of counties. The allegiance and/or color of each county are determined based 
+       on the party with the greater raw number of registered voters respectively. It is not representative of 
+       independent registered voters or their allegiance. As a result, counties can turn red or blue on Election 
+       Day regardless of their allegiance on this map.</br> </br>
+
+       Florida, as a southern state, has an inherent Democratic bias. This bias stems from the state's historical context. 
+       In the pre-FDR era, most southern states were majority Democratic. The party ideology switch left many previously 
+       registered democratic voters voting Republican on election day. Over time, this influence, or bias, has diminished, 
+       but can still be observed in the graphics showing voter registration trends over time. In addition, the increasing 
+       number of independent registered voters denoted in the Allegiance Over Time section of this app are significant in 
+       explaining the 'purple' nature of Florida's political arena. These registered voters are actively participating in 
+       political decisions, but do not label themselves with a political affiliation, which makes them 'volatile' and very 
+       much necessary to win the state.</p></b> <br/>
+       
+       Using data from: <br/>
+       <ul>
+       <br/><li>U.S. Census Bureau, 2013-2017 American Community Survey 5-Year Estimates 
+       
+       <ul>
+       <li>Median Family Income (In 2017 Inflation-Adjusted Dollars): State -- County </li>
+       <li>Percent Of People Who Are Foreign Born: State -- County </li>
+       </ul>
+       </li>
+       <br/><li>Florida Department of State - Division of Elections Voter Registration
+       
+       <ul>
+       <li>Registration reports by County (2019) </li>
+       <li>Registration reports by County and by Party (1972-2019) </li>
+       </ul>
+       </li>
+       <br/><li>Tigris R Package: Shapes files - by County, State #12 </li>
+       </ul>
+       <br/>
+       <b> A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.</b></br>
+       <p></p>
+       <a href='https://github.com/deboragonzalez/Purple_Sunshine_State'>Learn more about this project: Github</a>
+       <br/> <br/>
+       <h5> Contact the creator: <h5/>
+       Email Debora: deboragonzalez@college.harvard.edu
+       <br/> <a href='https://www.linkedin.com/in/debora-gonzalez'>Connect with Debora on LinkedIn</a>
+       <br/> <br/>"})
+     
 }
 
 # Run the application 
