@@ -2,7 +2,6 @@
 ### Data Visualization Project at Harvard University
 #### Developed By: Debora Gonzalez
 
-Readme
 This project explores Florida's political allegiance changes from 1972 to the present and highlights selected demographic trends that may relate to party affiliation in the Sunshine State.
 
 The maps and graphics in this app do not account for independent or third-party registered voters when determining the "allegiance" of counties. The allegiance and/or color of each county are determined based on the party with the greater raw number of registered voters respectively. It is not representative of independent registered voters or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their allegiance on this map.
