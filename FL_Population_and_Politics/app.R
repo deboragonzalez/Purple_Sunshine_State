@@ -81,17 +81,21 @@ no_geometry_county <- read_rds("no_geometry_county")
 
 ui <- fluidPage(
   
-  setBackgroundImage(src = "https://cdn.wallpapersafari.com/42/23/nj39Zm.jpg"),
+  setBackgroundImage(src = "https://www.xmple.com/wallpaper/gradient-white-linear-purple-1920x1080-c2-8a2be2-f5fffa-a-90-f-14.svg"),
+  
     # Choosing theme: after exploring the options, journal seemed like the most
     # fitting and aesthetically pleasant
   
-   theme = shinytheme("journal"),
+   theme = shinytheme("yeti"),
   
    
    # Application title
    
-   titlePanel("The Purple Sunshine State: Florida's Population & Politics"),
+   titlePanel("The 'Purple' Sunshine State: Florida's Population & Politics"),
    h4("A View into Florida's Political Arena"),
+  
+  # The navbarPage creates the tab layout for each tabpanel that can have
+  # subtabs insides
    
    navbarPage("",
       
@@ -101,21 +105,66 @@ ui <- fluidPage(
       
             tabPanel(h4("Florida by County: Political Allegiance & Demographics"),
                      h4("Hover over each county to learn about some of its demographic trends."),
-                     plotlyOutput("map_fl"), plotlyOutput("map_fl2"), plotlyOutput("map_fl3"),
-                     h5("Note that the maps in this app do not account for independent or third-party registered voters. 
-                        The allegiance and/or color of each county are selected based on the party with the greater raw 
-                        number of registered voters respectively. It is not representative of independent registered voters 
-                        or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their 
-                        allegiance on this map.")),
+                       
+                     # The first line is the tab title, the second line is text
+                     # in the general tab.
+                     
+                     tabsetPanel(
+                         tabPanel(h4("Political Map"), htmlOutput("map1"), 
+                                  plotlyOutput("map_fl"), br(), br(),
+                                  h5("Note that the maps in this app do not account for independent or third-party registered voters. 
+                                     The allegiance and color of each county are selected based on the party with the greater raw 
+                                     number of registered voters respectively. It is not representative of independent registered voters 
+                                     or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their 
+                                     allegiance on this map.")),
+                         
+                         # By opening a tabset panel I can create subtabs under
+                         # the previously created tab panel. I use html output
+                         # to format the map title text outside the map panel
+                         # itself. I then determine the key for the map, add
+                         # some space, and add caption text to this tab. The
+                         # text relates to the content of the map (and
+                         # selections made).
+                         
+                         tabPanel(h4("Demographic Map"), 
+                                  htmlOutput("map2"),
+                                    sidebarPanel(
+                                      selectInput("select_demo",
+                                                "Select Demographic:",
+                                                choices = list("Median Family Income" = "dollar",
+                                                               "Foreign Born Population" = "percent"),
+                                                multiple = FALSE)),
+                                  mainPanel(plotlyOutput("map_fl2"),  
+                                          h5("Note that the maps in this app do not account for independent or third-party registered voters. 
+                                              The allegiance of each county is selected based on the party with the greater raw 
+                                              number of registered voters respectively. It is not representative of independent registered voters 
+                                              or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their 
+                                              allegiance on this map."))))),
+      
+                          # This tabpanel under the tabset for the page tab
+                          # shows a demographic map. Again, html output is used
+                          # to title the map. The sidebar panel is so that the
+                          # viewer can choose what demographic variable he/she
+                          # wants to see. After it is set up, a main Panel tab
+                          # can include the map output and the additional
+                          # captioning text. Putting the sidebar inside the main
+                          # panel can overlap the map and the select widget.
+                          # Then, the main panel closes and so does the tab
+                          # panel for demographic map, the map tabset, and the
+                          # navigation tab page.
+            
+      
+            # This is a new tab page on the navigation bar. 
+      
             tabPanel(h4("Political Allegiance over Time"),
-                    sidebarLayout(
+                    
                       sidebarPanel(
                         sliderInput("year", 
                                     label = h4("Select Years:"), 
                                     min = min(unique(party_affiliation_years$year)), 
                                     max = max(unique(party_affiliation_years$year)),
                                     value = c(1972, 2019),
-                                    sep = "")),
+                                    sep = ""),
                       
                       # Sidebar with a slider input for years between 1972 to 2019 Using the years
                       # variable from the party_affiliation_years dataset I can create a slider
@@ -124,18 +173,41 @@ ui <- fluidPage(
                       # range of years. It allows the viewer to observe gradual trends and more
                       # detailed year to year changes.
                       
-                        # selectInput("select_party", 
-                        #             label = h4("Select Party:"),
-                        #             choices = list("Republican Party" = "republican_party_of_florida",
-                        #                            "Democratic Party" = "florida_democratic_party"),
-                        #             multiple = FALSE)),
+                         selectInput("select_party", 
+                                     label = h4("Select Party:"),
+                                     choices = list("Republican Party" = "republican_party_of_florida",
+                                                    "Democratic Party" = "florida_democratic_party"),
+                                     multiple = FALSE)),
                       
-                    mainPanel(h3("The Allegiance Trends"), plotOutput("percents"), 
+                      # In this case, the selectInput maps to a bar graph
+                      # showing changes in number of registered voters over
+                      # time. The viewer can change to which party s/he wants to
+                      # see.
+                      
+                    mainPanel(h3("Take a look at the trends:"), br(),
+                              plotOutput("percents"), 
                               h6("This graph shows the percentage of registered republican, democrat, and independent voters. 
                                  The increase in independent voters adds to the ambivalent political arena in Florida"), br(),
-                              plotOutput("reps"), br(), plotOutput("dems")))),
+                              plotOutput("parties"), br())),
+      
+                    # The main panel shows the output keys for each of the
+                    # graphs in this tab. I also add some text as a caption to
+                    # the line graph. The text is added in the order it should
+                    # appear in the output between the appropriate keys.
+      
+      
+            # This navigation tab shows a complete fully formatted table with
+            # the clean and tidy data used in this project. It uses gt output in
+            # order to fully format the table to the viewer's benefit.
+      
             tabPanel(h4("A Deeper Look at the Numbers"),
                              gt_output("county_table")),
+      
+      
+            # This last navigation tab tells the viewer about the project, the
+            # data sources, the assumptions and limitations as well as provides
+            # information about the developer.
+      
             tabPanel(h4("About this Project"),
                           htmlOutput("text"))
    ))
@@ -175,7 +247,10 @@ server <- function(input, output) {
   # variable values & text I identified earlier in ggplot aesthetics and not the
   # fill variable from geom_sf. The other two maps use the same steps except
   # they color by different variables to visually examine the geographic
-  # distribution of each variable.
+  # distribution of each variable. 
+  
+  
+  output$map1 <- renderText({"<h4><b>County Partisanship by Majority of Registered Voters</b></h4>"})
   
   output$map_fl <- renderPlotly({ 
     ggplotly(ggplot(data = data_by_county, 
@@ -187,7 +262,7 @@ server <- function(input, output) {
                theme_map() + 
                theme_economist() + 
                scale_fill_fivethirtyeight() +
-               labs(title = "County Partisanship by Majority of Registered Voters", 
+               labs(title = "", 
                     subtitle = "Hover over each county to learn about some of its demographic trends.",
                     fill = NULL) +
                theme(
@@ -199,51 +274,59 @@ server <- function(input, output) {
              tooltip = c("text"))
   })
   
+  
+  output$map2 <- renderText({"<h4><b>Median Family Income & Percent of Foreign Born Population Across Florida by County</b></h4>"})
   
   output$map_fl2 <- renderPlotly({ 
-    ggplotly(ggplot(data = data_by_county, 
-                    aes(text = paste(NAMELSAD, "<br>", 
-                                     "Major Party:", party_control, "<br>", 
-                                     "Foreign Born Population:", percent,"%", "<br>", 
-                                     "Median Family Income: $",dollar))) +
-               geom_sf(aes(fill = dollar)) +
-               theme_map() + 
-               theme_economist() + 
-               labs(title = "Median Family Income Across Florida by County", 
-                    subtitle = "Hover over each county to learn about some of its demographic trends.",
-                    fill = NULL) +
-               scale_fill_viridis() +
-               theme(
-                 panel.grid.major = element_line(colour = 'transparent'), 
-                 line = element_blank(),
-                 axis.text = element_blank(),
-                 axis.ticks = element_blank(),
-                 plot.background = element_rect(fill = "transparent")), 
-             tooltip = c("text"))
+    
+    if(input$select_demo == "dollar") {
+      ggplotly(ggplot(data = data_by_county, 
+                      aes(text = paste(NAMELSAD, "<br>", 
+                                       "Major Party:", party_control, "<br>", 
+                                       "Foreign Born Population:", percent,"%", "<br>", 
+                                       "Median Family Income: $",dollar))) +
+                 geom_sf(aes(fill = dollar)) +
+                 theme_map() + 
+                 theme_economist() + 
+                 labs(title = "", 
+                      subtitle = "Hover over each county to learn about some of its demographic trends.",
+                      fill = NULL) +
+                 scale_fill_viridis("Median Income ($)") +
+                 theme(
+                   panel.grid.major = element_line(colour = 'transparent'), 
+                   line = element_blank(),
+                   axis.text = element_blank(),
+                   axis.ticks = element_blank(),
+                   plot.background = element_rect(fill = "transparent")), 
+               tooltip = c("text"))}
+    
+    else{ggplotly(ggplot(data = data_by_county, 
+                         aes(text = paste(NAMELSAD, "<br>", 
+                                          "Major Party:", party_control, "<br>", 
+                                          "Foreign Born Population:", percent,"%", "<br>", 
+                                          "Median Family Income: $",dollar))) +
+                    geom_sf(aes(fill = percent)) +
+                    theme_map() + 
+                    labs(title = "", 
+                         subtitle = "Hover over each county to learn about some of its demographic trends.",
+                         fill = NULL) +
+                    theme_economist() +
+                    scale_fill_viridis_c("Foreign Born Percent (%)") +
+                    theme(
+                      panel.grid.major = element_line(colour = 'transparent'), 
+                      line = element_blank(),
+                      axis.text = element_blank(),
+                      axis.ticks = element_blank(),
+                      plot.background = element_rect(fill = "transparent")), 
+                  tooltip = c("text"))}
+    
+    # The if/else loop allows for the inclusion of each graphic according to the
+    # viewer's preference/selection. It connects the select widget key to the
+    # data output.
+    
   })
   
-  
-  output$map_fl3 <- renderPlotly({ 
-    ggplotly(ggplot(data = data_by_county, 
-                    aes(text = paste(NAMELSAD, "<br>", 
-                                     "Major Party:", party_control, "<br>", 
-                                     "Foreign Born Population:", percent,"%", "<br>", 
-                                     "Median Family Income: $",dollar))) +
-               geom_sf(aes(fill = percent)) +
-               theme_map() + 
-               theme_economist() + 
-               labs(title = "Percent of Foreign Born Population Across Florida by County", 
-                    subtitle = "Hover over each county to learn about some of its demographic trends.",
-                    fill = NULL) +
-               theme(
-                 panel.grid.major = element_line(colour = 'transparent'), 
-                 line = element_blank(),
-                 axis.text = element_blank(),
-                 axis.ticks = element_blank(),
-                 plot.background = element_rect(fill = "transparent")), 
-             tooltip = c("text"))
-  })
-  
+  # Percent of registered voters by party
   
   # In order to prepare my data to be plotted, I will create a new object
   # (dataframe), which I will later use to graph. This plot aims to show the
@@ -293,11 +376,16 @@ server <- function(input, output) {
   # the color (the borders/outline) itself to black to facilitate visual
   # clarity. I decided not to label the y axis because the title of the graph
   # makes it self-explanatory. I use theme_economist for aesthetic consistency
-  # and the scale_y_continuous call to avoid scientific notation.
+  # and the scale_y_continuous call to avoid scientific notation. Using the
+  # inputselect call from the ui with an if/else statement makes it so that the
+  # viewer can choose what party's trend to analyze.
   
-   output$reps <- renderPlot({
+   output$parties <- renderPlot({
+    
      gop_subset <- party_affiliation_years %>% 
        filter(year >= input$year[1] & year <= input$year[2])
+     
+     if(input$select_party == "republican_party_of_florida") {
      
      ggplot(gop_subset, aes(x = year, y = republican_party_of_florida)) + 
        geom_bar(stat="identity", fill = "red", colour = "black") +
@@ -305,38 +393,16 @@ server <- function(input, output) {
             x = "Year Range",
             title = "Number of Registered Republicans over Time") + 
        theme_economist()+
-       scale_y_continuous(labels = scales::comma)
-
-   })
+       scale_y_continuous(labels = scales::comma)}
      
-#       parties <- switch(input$select_party,
-#                         "Republican Party" = gop_subset$republican_party_of_florida,
-#                         "Democratic Party" = gop_subset$florida_democratic_party)
-#       parties$min <- input$year[1]
-#       parties$max <- input$year[2]
-#      
-#      ggplot(gop_subset, aes(x = year, y = input$select_party)) + 
-#      geom_bar(stat = 'identity') 
-#        labs(y = NULL,
-#             x = "Year Range",
-#             title = "Number of Registered Voters over Time") + 
-#        theme_economist()
-   
-     
-     output$dems <- renderPlot({
-       gop_subset <- party_affiliation_years %>% 
-         filter(year >= input$year[1] & year <= input$year[2])
-       
-       ggplot(gop_subset, aes(x = year, y = florida_democratic_party)) + 
+     else{ggplot(gop_subset, aes(x = year, y = florida_democratic_party)) + 
          geom_bar(stat="identity", fill = "blue", colour = "black") +
          labs(y = NULL,
               x = "Year Range",
               title = "Number of Registered Democrats over Time") + 
          theme_economist()+
-         scale_y_continuous(labels = scales::comma)
-         
-     })
-     
+         scale_y_continuous(labels = scales::comma)}
+       })
  
      
      
@@ -445,7 +511,7 @@ server <- function(input, output) {
        <p></p>
        <a href='https://github.com/deboragonzalez/Purple_Sunshine_State'>Learn more about this project: Github</a>
        <br/> <br/>
-       <h5> Contact the creator: <h5/>
+       <h5> Contact the developer: <h5/>
        Email Debora: deboragonzalez@college.harvard.edu
        <br/> <a href='https://www.linkedin.com/in/debora-gonzalez'>Connect with Debora on LinkedIn</a>
        <br/> <br/>"})
