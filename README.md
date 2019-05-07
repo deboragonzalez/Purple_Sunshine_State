@@ -1,8 +1,8 @@
 # The Sunshine State Turns Purple on Election Day
 ### Data Visualization Project at Harvard University
-#### Created By: Debora Gonzalez
+#### Developed By: Debora Gonzalez
 
-
+Readme
 This project explores Florida's political allegiance changes from 1972 to the present and highlights selected demographic trends that may relate to party affiliation in the Sunshine State.
 
 The maps and graphics in this app do not account for independent or third-party registered voters when determining the "allegiance" of counties. The allegiance and/or color of each county are determined based on the party with the greater raw number of registered voters respectively. It is not representative of independent registered voters or their allegiance. As a result, counties can turn red or blue on Election Day regardless of their allegiance on this map.
@@ -24,7 +24,7 @@ Using data from:
 * Tigris R Package: Shapes files - by County, State #12
 
 
-A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.
+My gratitude extends to all who supported me in the development of this project, especially to Beau Meche and Claire Fridkin for their continuous advise and support. A special thank you to Dr. David Kane and Albert Rivero for extensive feedback in the creation of this project.
 
 
 <a href='https://debi-gonzalez.shinyapps.io/FL_Population_and_Politics/'>Check out the published app here!</a><br/>
